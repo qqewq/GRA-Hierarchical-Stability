@@ -1,0 +1,202 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{microtype}
+
+\geometry{margin=1in}
+
+\title{Hierarchical Stability of GRA Obnullification: A Variational Formulation}
+\author{bitsoev oleg}
+\date{May 2026}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{axiom}{Axiom}
+\newtheorem{definition}{Definition}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+A formalization of the GRA obnullification mechanism is proposed as a variational hierarchical functional that determines the dynamics of ``foam'' $\Phi$ in a multi-level system. The derivative $d\Phi/dh$ with respect to the level parameter $h$ makes it possible to distinguish productive collapse of contradictions, stagnation, and degradation. Axioms, definitions, lemmas, and a theorem on the stability of obnullification are formulated, as well as a discrete algorithm with pseudocode for practical implementation.
+\end{abstract}
+
+\section{Introduction}
+
+The GRA (Gradient Reduction of Argumentative Foam) framework aims to minimize ``foam'' $\Phi$ --- a measure of contradictions, noise, and redundancy in hierarchical systems. The basic obnullification mechanism assumes that the top level of the hierarchy tends to $\Phi \approx 0$, which is interpreted as global coherence. In this work, obnullification is considered not only statically but also dynamically --- through the derivative $d\Phi/dh$. This allows introducing a stability criterion for obnullification and investigating the system's sensitivity to changes in the hierarchy.
+
+\section{Hierarchical Model and Foam Functional}
+
+A system with levels $l = 0,\dots,L$ is considered. The state of a level is $x_l \in \mathbb{R}^{n_l}$. The top level $L$ sets global coherence. Local foam: $\Phi_l = \Phi(x_l) \geq 0$. 
+
+\textbf{Hierarchical GRA-functional:}
+\begin{equation}
+J[x_0,\dots,x_L] = \sum_{l=0}^L \alpha_l \Phi(x_l) + \sum_{l=0}^{L-1} \beta_l C_l(x_l, A_l x_{l+1}) + \gamma \Psi(x_L),
+\label{eq:gra-functional}
+\end{equation}
+where:
+\begin{itemize}
+    \item $C_l$ --- penalty for mismatch between adjacent levels,
+    \item $A_l$ --- lifting/projection operator,
+    \item $\Psi(x_L)$ --- top-level obnullification condition,
+    \item $\alpha_l, \beta_l, \gamma > 0$ --- weights.
+\end{itemize}
+
+Under continuous parametrization of the level $h$, $\Phi(h)$ is differentiable, and $d\Phi/dh$ is the zero-gradient.
+
+\section{Axioms of GRA Obnullification}
+
+\begin{axiom}[Hierarchy]
+The system is organized into levels $l = 0,\dots,L$, each with its own state.
+\end{axiom}
+
+\begin{axiom}[Foam]
+For each level a foam functional $\Phi(x_l) \geq 0$ is defined.
+\end{axiom}
+
+\begin{axiom}[Obnullification]
+The operation $T_l$ reduces foam: $\Phi(T_l(x_l)) \leq \Phi(x_l)$.
+\end{axiom}
+
+\begin{axiom}[Monotonicity]
+In the ideal regime $\Phi_{l+1} \leq \Phi_l$.
+\end{axiom}
+
+\begin{axiom}[Sensitivity]
+$\Phi(h)$ is differentiable, the sign of $d\Phi/dh$ determines the evolution mode.
+\end{axiom}
+
+\section{Definitions}
+
+\begin{definition}[GRA-functional]
+See Equation~\ref{eq:gra-functional}.
+\end{definition}
+
+\begin{definition}[Stable obnullification]
+At a point $h^*$: $\Phi(h^*) = 0$, $\frac{d\Phi}{dh}(h^*) = 0$, $\frac{d^2\Phi}{dh^2}(h^*) > 0$.
+\end{definition}
+
+\begin{definition}[Discrete foam derivative]
+$\Delta\Phi_l = \Phi_{l+1} - \Phi_l$, its discrete analogue of $d\Phi/dh$.
+\end{definition}
+
+\begin{definition}[Zero-gradient]
+$\nabla_h \Phi := \frac{d\Phi}{dh}$, characterizes the direction and rate of foam change along the hierarchy.
+\end{definition}
+
+\section{Lemmas}
+
+\begin{lemma}[Local stationarity]
+At a minimum, the variational derivatives with respect to each $x_l$ vanish.
+\end{lemma}
+
+\begin{lemma}[Zero foam does not guarantee stability]
+It is also necessary that $\frac{d\Phi}{dh} = 0$.
+\end{lemma}
+
+\begin{lemma}[Positive derivative --- degradation]
+If $\frac{d\Phi}{dh} > 0$, foam grows.
+\end{lemma}
+
+\begin{lemma}[Discrete stability criterion]
+For a level $l^*$: $\Phi_{l^*} = 0$, $\Phi_{l^*+1} - \Phi_{l^*} = 0$, $\Phi_{l^*+1} - 2\Phi_{l^*} + \Phi_{l^*-1} > 0$.
+\end{lemma}
+
+\section{Stability Theorem}
+
+\begin{theorem}
+Let $\Phi(h)$ be twice differentiable with respect to $h$ and let there exist a point $h^*$ such that
+\begin{equation}
+\Phi(h^*) = 0, \quad \frac{d\Phi}{dh}(h^*) = 0, \quad \frac{d^2\Phi}{dh^2}(h^*) > 0.
+\label{eq:stability-conditions}
+\end{equation}
+Then obnullification at level $h^*$ is stable: in some neighborhood perturbations do not lead to foam growth, and the system returns to $\Phi \approx 0$.
+\end{theorem}
+
+\section{Proof Sketch}
+
+\begin{enumerate}
+    \item From $\frac{d\Phi}{dh}(h^*) = 0$ it follows that $h^*$ is a critical point.
+    \item The condition $\frac{d^2\Phi}{dh^2}(h^*) > 0$ means a local minimum.
+    \item There exists a neighborhood $U(h^*)$ where $\Phi(h) \geq \Phi(h^*) = 0$.
+    \item Since $\Phi \geq 0$, zero foam is locally minimal.
+    \item Under small perturbations a gradient process returns the system to $h^*$, which means stability. In the discrete case the reasoning is repeated via finite differences.
+\end{enumerate}
+
+\section{Discrete Algorithm and Pseudocode}
+
+The algorithm combines GRA obnullification, gradient alignment $d\Phi/dh$, and control of the second derivative.
+
+\begin{algorithm}[H]
+\caption{HierarchicalStabilityOptimizer}
+\begin{algorithmic}[1]
+\State \textbf{class} HierarchicalStabilityOptimizer
+\State \quad \textbf{def} \_\_init\_\_(self, hierarchy, lr=0.01):
+\State \quad \quad self.h = hierarchy \Comment{list of levels with .state and .foam()}
+\State \quad \quad self.lr = lr
+\State \quad \textbf{def} step(self):
+\State \quad \quad \# 1. GRA obnullification
+\State \quad \quad \textbf{for} level \textbf{in} self.h: level.state = gra\_nullify(level.state)
+\State \quad \quad \# 2. Align dPhi/dh
+\State \quad \quad \textbf{for} l \textbf{in} range(len(self.h)-1):
+\State \quad \quad \quad dPhi = self.h[l+1].foam() - self.h[l].foam()
+\State \quad \quad \quad \textbf{if} abs(dPhi) > 1e-6:
+\State \quad \quad \quad \quad grad = grad\_connection(self.h[l], self.h[l+1], dPhi)
+\State \quad \quad \quad \quad self.h[l+1].state -= self.lr * grad
+\State \quad \quad \# 3. Ensure d\^2Phi/dh\^2 > 0
+\State \quad \quad \textbf{for} l \textbf{in} range(1, len(self.h)-1):
+\State \quad \quad \quad d2Phi = self.h[l+1].foam() - 2*self.h[l].foam() + self.h[l-1].foam()
+\State \quad \quad \quad \textbf{if} d2Phi <= 0:
+\State \quad \quad \quad \quad self.h[l].state += self.lr * 0.01 * (self.h[l+1].state + self.h[l-1].state - 2*self.h[l].state)
+\State \quad \textbf{def} optimize(self, max\_iter=100):
+\State \quad \quad \textbf{for} \_ \textbf{in} range(max\_iter): self.step()
+\end{algorithmic}
+\end{algorithm}
+
+The full implementation with abstract functions is located in \texttt{src/optimizer.py}.
+
+\section{Discussion and Applications}
+
+Interpretation of the derivative sign:
+\begin{itemize}
+    \item $\frac{d\Phi}{dh} < 0$ --- productive foam collapse
+    \item $\frac{d\Phi}{dh} \approx 0$ --- stagnation or plateau
+    \item $\frac{d\Phi}{dh} > 0$ --- degradation (hallucinations, growth of contradictions)
+\end{itemize}
+
+\textbf{Applications:}
+\begin{itemize}
+    \item Diagnostics of cognitive stability of AI architectures (monitoring ``foam'' in hidden states of neural networks)
+    \item Multi-level management in organizations (analyzing consistency of decisions across hierarchy levels)
+    \item Analysis of the evolution of scientific theories (tracking contradictions in knowledge systems)
+\end{itemize}
+
+\section{Installation and Usage}
+
+\begin{verbatim}
+git clone https://github.com/qqewq/GRA-Hierarchical-Stability.git
+cd GRA-Hierarchical-Stability
+pip install -r requirements.txt
+python examples/demo.py
+\end{verbatim}
+
+To integrate with GRA-Multiverse-Final, replace the stubs in \texttt{src/foam\_utils.py} with real functions from your project.
+
+\section{References}
+
+\begin{itemize}
+    \item GRA-Multiverse-Final
+    \item GRA-Swarm
+    \item NeurIPS 2022 hierarchical optimization materials
+    \item HAL preprint hal-04088837
+    \item SPP1962 preprint 036, WIAS Berlin
+\end{itemize}
+
+\end{document}

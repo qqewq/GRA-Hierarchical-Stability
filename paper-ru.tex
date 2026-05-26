@@ -1,0 +1,205 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{microtype}
+
+\geometry{margin=1in}
+
+\title{Иерархическая устойчивость GRA-обнулёнки: вариационная формулировка}
+\author{bitsoev oleg}
+\date{Май 2026}
+
+\newtheorem{theorem}{Теорема}
+\newtheorem{lemma}[theorem]{Лемма}
+\newtheorem{axiom}{Аксиома}
+\newtheorem{definition}{Определение}
+
+\begin{document}
+
+\selectlanguage{russian}
+
+\maketitle
+
+\begin{abstract}
+Предлагается формализация механизма GRA-обнулёнки в виде вариационного иерархического функционала, определяющего динамику «пены» $\Phi$ в многоуровневой системе. Производная $d\Phi/dh$ по параметру уровня $h$ позволяет различать продуктивное схлопывание противоречий, стагнацию и деградацию. Сформулированы аксиомы, определения, леммы и теорема об устойчивости обнуления, а также дискретный алгоритм с псевдокодом для практической реализации.
+\end{abstract}
+
+\section{Введение}
+
+Фреймворк GRA (Gradient Reduction of Argumentative Foam) предназначен для минимизации «пены» $\Phi$ --- меры противоречий, шума и избыточности в иерархических системах. Базовый механизм обнулёнки предполагает, что верхний уровень иерархии стремится к $\Phi \approx 0$, что интерпретируется как глобальное согласование. В данной работе обнулёнка рассматривается не только статически, но и динамически --- через производную $d\Phi/dh$. Это позволяет ввести критерий устойчивости обнуления и исследовать чувствительность системы к изменениям иерархии.
+
+\section{Иерархическая модель и функционал пены}
+
+Рассматривается система с уровнями $l = 0,\dots,L$. Состояние уровня --- $x_l \in \mathbb{R}^{n_l}$. Верхний уровень $L$ задаёт глобальное согласование. Локальная пена: $\Phi_l = \Phi(x_l) \geq 0$.
+
+\textbf{Иерархический GRA-функционал:}
+\begin{equation}
+J[x_0,\dots,x_L] = \sum_{l=0}^L \alpha_l \Phi(x_l) + \sum_{l=0}^{L-1} \beta_l C_l(x_l, A_l x_{l+1}) + \gamma \Psi(x_L),
+\label{eq:gra-functional}
+\end{equation}
+где:
+\begin{itemize}
+    \item $C_l$ --- штраф за несогласование между соседними уровнями,
+    \item $A_l$ --- оператор подъёма/проекции,
+    \item $\Psi(x_L)$ --- верхнеуровневое условие обнуления,
+    \item $\alpha_l, \beta_l, \gamma > 0$ --- весовые коэффициенты.
+\end{itemize}
+
+При непрерывной параметризации уровня $h$, $\Phi(h)$ дифференцируема, и $d\Phi/dh$ --- градиент нулевости.
+
+\section{Аксиомы GRA-обнулёнки}
+
+\begin{axiom}[Иерархичность]
+Система организована в уровни $l = 0,\dots,L$, каждый со своим состоянием.
+\end{axiom}
+
+\begin{axiom}[Пена]
+Для каждого уровня определён функционал пены $\Phi(x_l) \geq 0$.
+\end{axiom}
+
+\begin{axiom}[Обнуление]
+Существует операция $T_l$, уменьшающая пену: $\Phi(T_l(x_l)) \leq \Phi(x_l)$.
+\end{axiom}
+
+\begin{axiom}[Монотонность]
+В идеальном режиме $\Phi_{l+1} \leq \Phi_l$.
+\end{axiom}
+
+\begin{axiom}[Чувствительность]
+$\Phi(h)$ дифференцируема, знак $d\Phi/dh$ определяет режим эволюции.
+\end{axiom}
+
+\section{Определения}
+
+\begin{definition}[GRA-функционал]
+См. формулу~\ref{eq:gra-functional}.
+\end{definition}
+
+\begin{definition}[Устойчивое обнуление]
+В точке $h^*$: $\Phi(h^*) = 0$, $\frac{d\Phi}{dh}(h^*) = 0$, $\frac{d^2\Phi}{dh^2}(h^*) > 0$.
+\end{definition}
+
+\begin{definition}[Дискретная производная пены]
+$\Delta\Phi_l = \Phi_{l+1} - \Phi_l$, её дискретный аналог $d\Phi/dh$.
+\end{definition}
+
+\begin{definition}[Градиент нулевости]
+$\nabla_h \Phi := \frac{d\Phi}{dh}$, характеризует направление и скорость изменения пены вдоль иерархии.
+\end{definition}
+
+\section{Леммы}
+
+\begin{lemma}[Локальная стационарность]
+В минимуме вариационные производные по каждому $x_l$ равны нулю.
+\end{lemma}
+
+\begin{lemma}[Нулевая пена не гарантирует устойчивости]
+Необходимо также $\frac{d\Phi}{dh} = 0$.
+\end{lemma}
+
+\begin{lemma}[Положительная производная --- деградация]
+Если $\frac{d\Phi}{dh} > 0$, пена растёт.
+\end{lemma}
+
+\begin{lemma}[Дискретный критерий устойчивости]
+Для уровня $l^*$: $\Phi_{l^*} = 0$, $\Phi_{l^*+1} - \Phi_{l^*} = 0$, $\Phi_{l^*+1} - 2\Phi_{l^*} + \Phi_{l^*-1} > 0$.
+\end{lemma}
+
+\section{Теорема об устойчивости обнуления}
+
+\begin{theorem}
+Пусть $\Phi(h)$ дважды дифференцируема по $h$ и существует точка $h^*$ такая, что
+\begin{equation}
+\Phi(h^*) = 0, \quad \frac{d\Phi}{dh}(h^*) = 0, \quad \frac{d^2\Phi}{dh^2}(h^*) > 0.
+\label{eq:stability-conditions}
+\end{equation}
+Тогда обнуление на уровне $h^*$ устойчиво: в некоторой окрестности возмущения не приводят к росту пены, и система возвращается к $\Phi \approx 0$.
+\end{theorem}
+
+\section{Набросок доказательства}
+
+\begin{enumerate}
+    \item Из $\frac{d\Phi}{dh}(h^*) = 0$ следует, что $h^*$ --- критическая точка.
+    \item Условие $\frac{d^2\Phi}{dh^2}(h^*) > 0$ означает локальный минимум.
+    \item Существует окрестность $U(h^*)$, где $\Phi(h) \geq \Phi(h^*) = 0$.
+    \item Так как $\Phi \geq 0$, нулевая пена является локально минимальной.
+    \item При малых возмущениях градиентный процесс возвращает систему к $h^*$, что и означает устойчивость. В дискретном случае рассуждение повторяется через конечные разности.
+\end{enumerate}
+
+\section{Дискретный алгоритм и псевдокод}
+
+Алгоритм совмещает GRA-обнуление, выравнивание градиента $d\Phi/dh$ и контроль второй производной.
+
+\begin{algorithm}[H]
+\caption{HierarchicalStabilityOptimizer}
+\begin{algorithmic}[1]
+\State \textbf{class} HierarchicalStabilityOptimizer
+\State \quad \textbf{def} \_\_init\_\_(self, hierarchy, lr=0.01):
+\State \quad \quad self.h = hierarchy \Comment{список уровней с .state и .foam()}
+\State \quad \quad self.lr = lr
+\State \quad \textbf{def} step(self):
+\State \quad \quad \# 1. GRA-обнуление
+\State \quad \quad \textbf{for} level \textbf{in} self.h: level.state = gra\_nullify(level.state)
+\State \quad \quad \# 2. Выравнивание dPhi/dh
+\State \quad \quad \textbf{for} l \textbf{in} range(len(self.h)-1):
+\State \quad \quad \quad dPhi = self.h[l+1].foam() - self.h[l].foam()
+\State \quad \quad \quad \textbf{if} abs(dPhi) > 1e-6:
+\State \quad \quad \quad \quad grad = grad\_connection(self.h[l], self.h[l+1], dPhi)
+\State \quad \quad \quad \quad self.h[l+1].state -= self.lr * grad
+\State \quad \quad \# 3. Обеспечение d\^2Phi/dh\^2 > 0
+\State \quad \quad \textbf{for} l \textbf{in} range(1, len(self.h)-1):
+\State \quad \quad \quad d2Phi = self.h[l+1].foam() - 2*self.h[l].foam() + self.h[l-1].foam()
+\State \quad \quad \quad \textbf{if} d2Phi <= 0:
+\State \quad \quad \quad \quad self.h[l].state += self.lr * 0.01 * (self.h[l+1].state + self.h[l-1].state - 2*self.h[l].state)
+\State \quad \textbf{def} optimize(self, max\_iter=100):
+\State \quad \quad \textbf{for} \_ \textbf{in} range(max\_iter): self.step()
+\end{algorithmic}
+\end{algorithm}
+
+Полная реализация с абстрактными функциями находится в \texttt{src/optimizer.py}.
+
+\section{Обсуждение и применения}
+
+Интерпретация знака производной:
+\begin{itemize}
+    \item $\frac{d\Phi}{dh} < 0$ --- продуктивное схлопывание пены
+    \item $\frac{d\Phi}{dh} \approx 0$ --- стагнация или плато
+    \item $\frac{d\Phi}{dh} > 0$ --- деградация (галлюцинации, рост противоречий)
+\end{itemize}
+
+\textbf{Применения:}
+\begin{itemize}
+    \item Диагностика когнитивной устойчивости ИИ-архитектур (мониторинг «пены» в скрытых состояниях нейронных сетей)
+    \item Многоуровневое управление в организациях (анализ согласованности решений на разных уровнях иерархии)
+    \item Анализ эволюции научных теорий (отслеживание противоречий в системе знаний)
+\end{itemize}
+
+\section{Установка и использование}
+
+\begin{verbatim}
+git clone https://github.com/qqewq/GRA-Hierarchical-Stability.git
+cd GRA-Hierarchical-Stability
+pip install -r requirements.txt
+python examples/demo.py
+\end{verbatim}
+
+Для интеграции с GRA-Multiverse-Final замените заглушки в \texttt{src/foam\_utils.py} на реальные функции из вашего проекта.
+
+\section{Ссылки}
+
+\begin{itemize}
+    \item GRA-Multiverse-Final
+    \item GRA-Swarm
+    \item NeurIPS 2022 hierarchical optimization materials
+    \item HAL preprint hal-04088837
+    \item SPP1962 preprint 036, WIAS Berlin
+\end{itemize}
+
+\end{document}
