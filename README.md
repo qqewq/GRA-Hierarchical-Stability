@@ -1,3 +1,6 @@
+https://orcid.org/my-orcid?orcid=0009-0004-1872-1153
+https://doi.org/10.5281/zenodo.20395001
+--------------
 # Hierarchical Stability of GRA Obnullification: A Variational Formulation
 # Иерархическая устойчивость GRA-обнулёнки: вариационная формулировка
 
